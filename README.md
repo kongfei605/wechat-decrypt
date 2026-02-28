@@ -88,6 +88,46 @@ python monitor.py
 
 每 3 秒轮询一次，在终端显示新消息。
 
+### 5. MCP Server (Claude AI 集成)
+
+将微信数据查询能力接入 [Claude Code](https://claude.ai/claude-code)，让 AI 直接读取你的微信消息。
+
+```bash
+pip install mcp
+```
+
+注册到 Claude Code：
+
+```bash
+claude mcp add wechat -- python C:\Users\你的用户名\wechat-decrypt\mcp_server.py
+```
+
+或手动编辑 `~/.claude.json`：
+
+```json
+{
+  "mcpServers": {
+    "wechat": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["C:\\Users\\你的用户名\\wechat-decrypt\\mcp_server.py"]
+    }
+  }
+}
+```
+
+注册后在 Claude Code 中即可使用以下工具：
+
+| Tool | 功能 |
+|------|------|
+| `get_recent_sessions(limit)` | 最近会话列表（含消息摘要、未读数） |
+| `get_chat_history(chat_name, limit)` | 指定聊天的消息记录（支持模糊匹配名字） |
+| `search_messages(keyword, limit)` | 全库搜索消息内容 |
+| `get_contacts(query, limit)` | 搜索/列出联系人 |
+| `get_new_messages()` | 获取自上次调用以来的新消息 |
+
+前置条件：需要先完成步骤 1-2（配置 + 提取密钥）。
+
 ## 文件说明
 
 | 文件 | 说明 |
@@ -95,6 +135,7 @@ python monitor.py
 | `config.py` | 配置加载器 |
 | `find_all_keys.py` | 从微信进程内存提取所有数据库密钥 |
 | `decrypt_db.py` | 全量解密所有数据库 |
+| `mcp_server.py` | MCP Server，让 Claude AI 查询微信数据 |
 | `monitor_web.py` | 实时消息监听 (Web UI + SSE) |
 | `monitor.py` | 实时消息监听 (命令行) |
 | `latency_test.py` | 延迟测量诊断工具 |
